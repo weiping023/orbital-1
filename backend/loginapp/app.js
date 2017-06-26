@@ -16,12 +16,14 @@ var db = mongoose.connection;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var profile = require('./routes/profile');
 
 // Init App
 var app = express();
 
 // View Engine
 app.set('views', path.join(__dirname, 'views'));
+
 app.engine('handlebars', exphbs({defaultLayout:'layout'}));
 app.set('view engine', 'handlebars');
 
@@ -62,6 +64,33 @@ app.use(expressValidator({
   }
 }));
 
+/*var Schema = new mongoose.Schema( {
+  _id: String,
+  name: String,
+  text: String
+})
+
+var _user = mongoose.model('emp', Schema);
+
+app.get('/view', function(req, res){
+  _user.find({}, function(err, docs){
+    if(err) res.json(err);
+    else    res.render('index', {users: docs});
+  });
+});
+
+app.post('/new',  function(req,res) {
+  new _user( {
+    _id: req.body.name,
+    name: req.body.org,
+    text: req.body.eventDetails
+  }).save(function(err, doc) {
+    if(err) res.json(err);
+    else  res.redirect('/view');
+  });
+})
+*/
+
 // Connect Flash
 app.use(flash());
 
@@ -78,6 +107,8 @@ app.use(function (req, res, next) {
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/profile', profile);
+
 
 // Set Port
 app.set('port', (process.env.PORT || 3000));
