@@ -15,13 +15,15 @@ mongoose.connect('mongodb://localhost/loginapp');
 var db = mongoose.connection;
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var users = require('./routes/users'); //passport.js
+var profile = require('./routes/profile');
 
 // Init App
 var app = express();
 
 // View Engine
 app.set('views', path.join(__dirname, 'views'));
+
 app.engine('handlebars', exphbs({defaultLayout:'layout'}));
 app.set('view engine', 'handlebars');
 
@@ -78,6 +80,8 @@ app.use(function (req, res, next) {
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/profile', profile);
+
 
 // Set Port
 app.set('port', (process.env.PORT || 3000));

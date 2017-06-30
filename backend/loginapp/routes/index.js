@@ -1,5 +1,8 @@
 var express = require('express');
 var router = express.Router();
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/loginapp');
+var Schema = mongoose.Schema;
 
 // Get Homepage
 router.get('/', ensureAuthenticated, function(req, res){
@@ -14,5 +17,37 @@ function ensureAuthenticated(req, res, next){
 		res.redirect('/users/login');
 	}
 }
+
+var userDataSchema = new Schema({
+  name: {type: String, required: true},
+  org: String,
+  content: String,
+  date: String
+}, {collection: 'request'});
+
+var UserData = mongoose.model('UserData', userDataSchema);
+
+
+router.get('/get-data', function(req, res, next) {
+  UserData.find()
+      .then(function(doc) {
+        res.render('index', {items: doc});
+      });
+});
+
+router.post('/new', function(req, res, next) {
+  var item = {
+    name: req.body.name,
+    org: req.body.org,
+    content: req.body.eventDetails,
+    date: req.body.date
+  };
+
+  var data = new UserData(item);
+  data.save();
+
+  res.redirect('/');
+});
+
 
 module.exports = router;

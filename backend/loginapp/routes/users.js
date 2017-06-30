@@ -3,7 +3,7 @@ var router = express.Router();
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
-var User = require('../models/user');
+var User = require('../models/user'); //database
 
 // Register
 router.get('/register', function(req, res){
@@ -14,6 +14,8 @@ router.get('/register', function(req, res){
 router.get('/login', function(req, res){
 	res.render('login');
 });
+
+
 
 // Register User
 router.post('/register', function(req, res){
@@ -98,5 +100,6 @@ router.get('/logout', function(req, res){
 
 	res.redirect('/users/login');
 });
+
 
 module.exports = router;
