@@ -4,8 +4,6 @@ var bcrypt = require('bcryptjs');
 // User Schema
 var UserSchema = mongoose.Schema({
 
-
-	local: {
 		username: {
 			type: String,
 			index:true
@@ -19,21 +17,7 @@ var UserSchema = mongoose.Schema({
 		name: {
 			type: String
 		}
-	},
 
-	facebook: {
-        id  : String,
-        token : String,
-        email : String,
-        name  : String
-    },
-
-    google: {
-        id   : String,
-        token: String,
-        email: String,
-        name : String
-    }
 });
 
 var User = module.exports = mongoose.model('User', UserSchema);

@@ -3,11 +3,10 @@ var Schema = mongoose.Schema;
 
 var Todo = new Schema (
 {
-	user_id: String,
-	content: String,
-	updated: Date},
-	{collection: 'request'}
+	name: String},
+	{collection: 'event'}
 );
 
-mongoose.model('Todo', Todo);
 mongoose.connect( 'mongodb://localhost/loginapp');
+
+var Todo = module.exports = mongoose.model('Todo', Todo);

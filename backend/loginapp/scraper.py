@@ -8,21 +8,24 @@ from bs4 import BeautifulSoup as soup
 from urllib2 import urlopen as openUrl
 from datetime import date
 from dateutil.relativedelta import relativedelta
-from pymongo import MongoClient
+#from pymongo import MongoClient
 
 import re
+import json
 
 #mongoDB
-client = MongoClient()
-client = MongoClient('mongodb://localhost:27017/')
-db = client.test_database
-db = client.
+#client = MongoClient()
+#client = MongoClient('mongodb://localhost:27017/')
+#db = client.test_database
+#db = client.
 
 #scrape options: adjust values where necessary
 monthsToScrape = 6
 entriesToExtract = str(200)
 baseURL = "https://www.sistic.com.sg"
 outFile = 'events_data.out'
+
+webLinks, imageLinks, titles, startDates, venues, categories = [], [], [], [], [], []
 
 #remove all html tags from a given line and return it
 def cleanHtml(rawHtml):
@@ -44,9 +47,14 @@ def cleanImageandTitle(imageAndTitleData):
     #for index, stuff in enumerate(imageData):
         #out.write(str(index) + ": " + stuff + "\n")
 
-    out.write("**URL: " + baseURL + siteLink.rstrip() + "\n")
-    out.write("**Image: " + baseURL + imageLink.rstrip() + "\n")
-    out.write("**Title: " + cleanHtml(titleLine).rstrip() + "\n")
+    #out.write("**URL: " + baseURL + siteLink.rstrip() + "\n")
+    #out.write("**Image: " + baseURL + imageLink.rstrip() + "\n")
+    #out.write("**Title: " + cleanHtml(titleLine).rstrip() + "\n")
+
+    #Append to the array
+    webLinks.append(baseURL + siteLink.rstrip())
+    imageLinks.append(baseURL + imageLink.rstrip())
+    titles.append(cleanHtml(titleLine).rstrip())
 
 #cleans the html data and extract relevant data for each event
 def processEntry(entryData):
@@ -58,9 +66,14 @@ def processEntry(entryData):
     #image and title line is requires more cleaning up compared to the other data, so we will clean them in a seperate function
     cleanImageandTitle(imageAndTitleLine)
     #rest of the data can be cleaned simply
-    out.write("**Date: " + cleanHtml(dateLine).rstrip()+"\n")
-    out.write("**Venue: " + cleanHtml(venueLine).rstrip()+"\n")
-    out.write("**Category: " + cleanHtml(categoryLine).rstrip()+"\n")
+    #out.write("**Date: " + cleanHtml(dateLine).rstrip()+"\n")
+    #out.write("**Venue: " + cleanHtml(venueLine).rstrip()+"\n")
+    #out.write("**Category: " + cleanHtml(categoryLine).rstrip()+"\n")
+
+    #Append to the array
+    startDates.append(cleanHtml(dateLine).rstrip())
+    venues.append(cleanHtml(venueLine).rstrip())
+    categories.append(cleanHtml(categoryLine).rstrip())
 
 #converts the date format given by python date() into a string usable to parse into sistic URL
 def formatDate(date):
@@ -107,7 +120,17 @@ for line in result[1:]:
     currData = str(line)
     entryData  = currData.split("<td>")
     processEntry(entryData)
-    out.write("---------------------------------------------------------------------------------\n")
+    #out.write("---------------------------------------------------------------------------------\n")
+
+#store all the arrays
+events_data =[{"URL": u, "Image": i, "Title": t, "Date": d, "Venue": v, "Category": c}
+            for u, i, t, d, v, c in zip(webLinks, imageLinks, titles, startDates, venues, categories)]
+
+json.dump(events_data, out)
+#output = {"stuff": [1, 2, 3]}
+#json.dump(output, file)
+#print json.dumps(events_data)
+#print events_data.type()
 
 out.flush()
 out.close()
