@@ -25,7 +25,7 @@ entriesToExtract = str(200)
 baseURL = "https://www.sistic.com.sg"
 outFile = 'events_data.out'
 
-webLinks, imageLinks, titles, startDates, venues, categories = [], [], [], [], [], []
+event_id, webLinks, imageLinks, titles, startDates, venues, categories = [], [], [], [], [], [], []
 
 #remove all html tags from a given line and return it
 def cleanHtml(rawHtml):
@@ -52,6 +52,7 @@ def cleanImageandTitle(imageAndTitleData):
     #out.write("**Title: " + cleanHtml(titleLine).rstrip() + "\n")
 
     #Append to the array
+    event_id.append(siteLink[8:])
     webLinks.append(baseURL + siteLink.rstrip())
     imageLinks.append(baseURL + imageLink.rstrip())
     titles.append(cleanHtml(titleLine).rstrip())
@@ -123,8 +124,8 @@ for line in result[1:]:
     #out.write("---------------------------------------------------------------------------------\n")
 
 #store all the arrays
-events_data =[{"URL": u, "Image": i, "Title": t, "Date": d, "Venue": v, "Category": c}
-            for u, i, t, d, v, c in zip(webLinks, imageLinks, titles, startDates, venues, categories)]
+events_data =[{"Event_id": e, "URL": u, "Image": i, "Title": t, "Date": d, "Venue": v, "Category": c}
+            for e, u, i, t, d, v, c in zip(event_id, webLinks, imageLinks, titles, startDates, venues, categories)]
 
 json.dump(events_data, out)
 #output = {"stuff": [1, 2, 3]}

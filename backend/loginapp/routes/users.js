@@ -40,6 +40,7 @@ router.post('/register', function(req, res){
 			errors:errors
 		});
 	} else {
+				
 		var newUser = new User({
 			name: name,
 			email:email,
@@ -52,6 +53,7 @@ router.post('/register', function(req, res){
 			console.log(user);
 		});
 
+
 		req.flash('success_msg', 'You are registered and can now login');
 
 		res.redirect('/users/login');
@@ -60,11 +62,13 @@ router.post('/register', function(req, res){
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
+
    User.getUserByUsername(username, function(err, user){
    	if(err) throw err;
    	if(!user){
    		return done(null, false, {message: 'Unknown User'});
    	}
+
 
    	User.comparePassword(password, user.password, function(err, isMatch){
    		if(err) throw err;

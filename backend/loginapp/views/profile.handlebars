@@ -11,14 +11,17 @@
 
   {{#each data}}
   <tr>
-  	<td>{{Title}}</td>
-  	<td>{{Date}}</td>
-  	<td>{{Venue}}</td>
-  	<td>{{Category}}</td>
+    <td>{{Title}}</td>
+    <td>{{Date}}</td>
+    <td>{{Venue}}</td>
+    <td>{{Category}}</td>
     <td>
-      <form method="POST" action="/mark">
-       <button onclick="{{Title}})">Mark</button>
-       <a href="/get">read</a> <p></p>
+      <form action="/profile/markEvent" method="post">
+        <input type="hidden" name="title" value="{{Title}}"/>
+        <input type="hidden" name="date" value= "{{Date}}"/>
+        <input type="hidden" name="venue" value = "{{Venue}}"/>
+        <input type="hidden" name="category" value="{{Category}}"/>
+        <input type="submit" value="Mark" id="submit"/>
       </form>
     </td>
   </tr>

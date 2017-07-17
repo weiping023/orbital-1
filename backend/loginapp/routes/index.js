@@ -4,6 +4,8 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/loginapp');
 var Schema = mongoose.Schema;
 
+var Event = require('../models/Event'); //database
+
 // Get Homepage
 router.get('/', ensureAuthenticated, function(req, res){
 	res.render('index');
@@ -48,6 +50,61 @@ router.post('/new', function(req, res, next) {
 
   res.redirect('/');
 });
+
+
+//Insert new marked event
+router.post('/profile/markEvent', function(req, res, next) {
+
+  var count = 0;
+  Event.find({ username: req.user.username, title: req.body.title }).exec(function (err, results) {
+    count = results.length
+
+  });
+// if(count === 0) {
+//   res.send("Event not added");
+// }
+ // else {
+    var markedEvent = new Event();
+    markedEvent.title = req.body.title;
+    markedEvent.date = req.body.date;
+    markedEvent.venue = req.body.venue;
+    markedEvent.category = req.body.category;
+    markedEvent.username = req.user.username;
+
+    markedEvent.save();
+    
+ // }
+  res.redirect('/profile');  
+
+});
+
+
+
+//get Event
+
+router.get('/event', isLoggedIn, function(req, res){
+   Event.find()
+      .then(function(doc) {
+        res.render('event', {events: doc});
+      })
+});
+
+router.post('/deleteEvent', function (req, res) {
+  Event.remove({ _id: req.body.event_id },
+              function (err) {
+                  res.redirect('/event');
+              })
+  //res.send('DELETE request to homepage');
+});
+
+
+function isLoggedIn(req, res, next){
+  if (req.isAuthenticated())
+    return next();
+
+  res.redirect('/users/login');
+}
+
 
 
 module.exports = router;
